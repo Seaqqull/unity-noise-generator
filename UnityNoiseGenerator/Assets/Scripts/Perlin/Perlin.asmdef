@@ -1,0 +1,16 @@
+{
+    "name": "Perlin",
+    "rootNamespace": "NoiseGenerator.Perlin",
+    "references": [
+        "GUID:7c3dff65666a14736967b40bfe26a72f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

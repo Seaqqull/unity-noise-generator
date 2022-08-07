@@ -1,0 +1,31 @@
+#pragma kernel CSMain
+
+
+// Custom data
+struct NoiseSample
+{
+    float Value;
+};
+
+
+// Output
+RWTexture2D<float4> Result;
+
+// Data
+StructuredBuffer<NoiseSample> SamplesBuffer;
+uint2 TextureResolution;
+float4 ForegroundColor;
+float4 BackgroundColor;
+int SamplesBufferCount;
+int SampleWidth;
+
+
+// Methods
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float2 relativeCoordinates = (float2)id.xy / TextureResolution.xy;
+    const uint currentSample = (relativeCoordinates.x * SamplesBufferCount);
+
+    Result[id.xy] = (relativeCoordinates.y < SamplesBuffer[currentSample].Value) ? ForegroundColor : BackgroundColor;
+}
