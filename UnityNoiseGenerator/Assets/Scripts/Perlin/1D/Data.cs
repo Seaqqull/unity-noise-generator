@@ -61,7 +61,9 @@ namespace NoiseGenerator.Perlin.OneDimensional.Data
             
             int vector_1, vector_2;
             
+            // Left
             vector_1 = _instancePermutations[_instancePermutations[_instancePermutations[xi]]];
+            // Right
             vector_2 = _instancePermutations[_instancePermutations[_instancePermutations[IncrementCellIndex(xi)]]];
 
             float gradient_1;

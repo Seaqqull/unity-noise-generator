@@ -2,7 +2,8 @@
     "name": "Perlin",
     "rootNamespace": "NoiseGenerator.Perlin",
     "references": [
-        "GUID:7c3dff65666a14736967b40bfe26a72f"
+        "GUID:34aac2a60b3364d83aa2bfee3e20857d",
+        "GUID:24c7c2286d42249d9979a5391863a12e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

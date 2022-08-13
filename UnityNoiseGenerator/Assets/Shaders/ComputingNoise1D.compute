@@ -11,8 +11,10 @@ struct NoiseSample
 // Output
 RWTexture2D<float4> Result;
 
-// Data
+// Buffers
 StructuredBuffer<NoiseSample> SamplesBuffer;
+
+// Data
 uint2 TextureResolution;
 float4 ForegroundColor;
 float4 BackgroundColor;
@@ -20,7 +22,7 @@ int SamplesBufferCount;
 int SampleWidth;
 
 
-// Methods
+// Kernel functions
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {

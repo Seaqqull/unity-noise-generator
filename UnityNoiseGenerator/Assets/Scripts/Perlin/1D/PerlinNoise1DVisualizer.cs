@@ -1,6 +1,6 @@
 using NoiseGenerator.Perlin.OneDimensional.Data;
-using NoiseGenerator.TextureContainer;
 using System.Collections.Generic;
+using NoiseGenerator.Base;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -16,14 +16,12 @@ namespace NoiseGenerator.Perlin
         }
         
         #region Constants
-        private static readonly int SHADER_MAIN_TEXTURE = Shader.PropertyToID("_MainTex");
-        private static readonly int SHADER_SAMPLE_WiDTH = Shader.PropertyToID("SampleWidth");
+        private static readonly int SHADER_SAMPLES_BUFFER_COUNT = Shader.PropertyToID("SamplesBufferCount");
         private static readonly int SHADER_COLOR_FOREGROUND = Shader.PropertyToID("ForegroundColor");
         private static readonly int SHADER_COLOR_BACKGROUND = Shader.PropertyToID("BackgroundColor");
         private static readonly int SHADER_SAMPLES_BUFFER = Shader.PropertyToID("SamplesBuffer");
-        private static readonly int SHADER_SAMPLES_BUFFER_COUNT = Shader.PropertyToID("SamplesBufferCount");
-        private const float SAMPLES_COUNT_UPDATE_DELAY = 1.0f;
-        private const int MAX_SAMPLES = 1024;
+        private static readonly int SHADER_SAMPLE_WiDTH = Shader.PropertyToID("SampleWidth");
+        private static readonly int SHADER_MAIN_TEXTURE = Shader.PropertyToID("_MainTex");
         #endregion
 
         [SerializeField] private Color _backgroungColor = Color.black;
@@ -43,8 +41,6 @@ namespace NoiseGenerator.Perlin
         
         private Queue<NoiseSample> _noiseSamples = new ();
         private ComputeBuffer _samplesBuffer;
-        private float _samplesUpdateDelay;
-        private int _newSamplesCount;
         private PerlinNoise1D _noise;
         private Renderer _renderer;
         private int _sampleCounter;
@@ -141,32 +137,28 @@ namespace NoiseGenerator.Perlin
         public void VisualizeSingle()
         {
             // --- Manage [_samplesCount] change
-            if (_newSamplesCount != _samplesCount)
+            if (_samplesCount != _noiseSamples.Count)
             {
-                _samplesUpdateDelay = SAMPLES_COUNT_UPDATE_DELAY;
-                _newSamplesCount = _sampleCounter;
-
-
-                var noiseSamples = _noiseSamples.ToList();
+                var temporarySamples = _noiseSamples.ToList();
                 // Handle decrease of [_samplesCount]
-                var samplesToDelete = (noiseSamples.Count - _samplesCount);
+                var samplesToDelete = (temporarySamples.Count - _samplesCount);
                 for (int i = 0; i < samplesToDelete; i++)
                 {
                     _sampleCounter--;
-                    noiseSamples.RemoveAt(noiseSamples.Count - 1);
+                    temporarySamples.RemoveAt(temporarySamples.Count - 1);
                 }
             
                 // Handle increase of [_samplesCount]
-                while (noiseSamples.Count != _samplesCount)
+                while (temporarySamples.Count != _samplesCount)
                 {
                     _sampleCounter++;
-                    noiseSamples.Add(new NoiseSample() {
+                    temporarySamples.Add(new NoiseSample() {
                         Value = _noise.Evaluate(_seed + ((_samplesCount + _sampleCounter) * _sampleFrequency) + _time, _octaves, _persistence)
                     });    
                 }
                 
                 _noiseSamples.Clear();
-                foreach (var noiseSample in noiseSamples)
+                foreach (var noiseSample in temporarySamples)
                     _noiseSamples.Enqueue(noiseSample);
             }
             
