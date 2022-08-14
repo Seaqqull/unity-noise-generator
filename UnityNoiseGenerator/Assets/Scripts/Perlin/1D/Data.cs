@@ -56,7 +56,7 @@ namespace NoiseGenerator.Perlin.OneDimensional.Data
             int xi = (int)x & LAST_ARRAY_INDEX;
             float xf = x - (int)x;
             
-            float v = Fade(xf);
+            float u = Fade(xf);
 
             
             int vector_1, vector_2;
@@ -68,7 +68,7 @@ namespace NoiseGenerator.Perlin.OneDimensional.Data
 
             float gradient_1;
 
-            gradient_1 = Lerp(Gradient(vector_1, xf), Gradient(vector_2, (xf - 1.0f)), v);
+            gradient_1 = Lerp(Gradient(vector_1, xf), Gradient(vector_2, (xf - 1.0f)), u);
 
             return (gradient_1 + 1) * 0.5f;
         }

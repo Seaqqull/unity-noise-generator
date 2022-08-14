@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 171633505}
   - component: {fileID: 171633504}
   - component: {fileID: 171633503}
-  - component: {fileID: 171633506}
+  - component: {fileID: 171633508}
   - component: {fileID: 171633507}
   m_Layer: 0
   m_Name: Quad
@@ -208,7 +208,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &171633506
+--- !u!114 &171633507
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,23 +217,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 171633500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1047a7fc79e0474da38828aa2e98d55, type: 3}
+  m_Script: {fileID: 11500000, guid: 607cf86c1662c443f9c0a448f66aa5df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shader: {fileID: 7200000, guid: d0ce7fb4eecfd4b6683d0c03d400a867, type: 3}
+  _enabled: 1
+  _noiseColorBounds:
+  - Center: 0.85
+    Color: {r: 0.65882355, g: 0.85490197, b: 0.8627451, a: 1}
+  - Center: 0.65
+    Color: {r: 0.42745098, g: 0.40784314, b: 0.45882353, a: 1}
+  - Center: 0.581
+    Color: {r: 0.9137255, g: 0.76862746, b: 0.41568628, a: 1}
+  - Center: 0.4
+    Color: {r: 0.16470587, g: 0.6156863, b: 0.22332306, a: 1}
+  - Center: 0.25
+    Color: {r: 0.011764706, g: 0.015686275, b: 0.36862746, a: 1}
+--- !u!114 &171633508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171633500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43a9ae9478fe486aafc1fa2ade73e1b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shader: {fileID: 7200000, guid: 677eb7376d04e41439957a472eb994ff, type: 3}
   _kernelName: CSMain
-  _textureSize: {x: 256, y: 512}
+  _textureSize: {x: 256, y: 256}
   _backgroungColor: {r: 0, g: 0, b: 0, a: 1}
   _foregroundColor: {r: 0.7058824, g: 0.9019608, b: 0.8627451, a: 1}
   _sampleZoom: 1
-  _sampleFrequency: 0.01
-  _octaves: 4
+  _sampleFrequency: 0.02
+  _octaves: 3
   _persistence: 0.5
   _realtimeUpdate: 1
   _seed: 0
   _time: 0
   _timeScale: 0.5
-  _updateRate: 60
+  _updateRate: 30
   _onStart:
     m_PersistentCalls:
       m_Calls:
@@ -251,31 +275,19 @@ MonoBehaviour:
         m_CallState: 2
   _onDispatch:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &171633507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 171633500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 607cf86c1662c443f9c0a448f66aa5df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _enabled: 1
-  _noiseColorBounds:
-  - Center: 0.95
-    Color: {r: 0.65882355, g: 0.85490197, b: 0.8627451, a: 1}
-  - Center: 0.65
-    Color: {r: 0.42745098, g: 0.40784314, b: 0.45882353, a: 1}
-  - Center: 0.525
-    Color: {r: 0.9137255, g: 0.76862746, b: 0.41568628, a: 1}
-  - Center: 0.4
-    Color: {r: 0.16470589, g: 0.6156863, b: 0.56078434, a: 1}
-  - Center: 0.15
-    Color: {r: 0.011764706, g: 0.015686275, b: 0.36862746, a: 1}
+      m_Calls:
+      - m_Target: {fileID: 171633507}
+        m_TargetAssemblyTypeName: NoiseGenerator.Helpers.ColorsHelper, Helpers
+        m_MethodName: Process
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &307764791
 GameObject:
   m_ObjectHideFlags: 0

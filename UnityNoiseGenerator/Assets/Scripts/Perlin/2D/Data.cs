@@ -62,8 +62,8 @@ namespace NoiseGenerator.Perlin.TwoDimensional.Data
             float xf = x - (int)x;
             float yf = y - (int)y;
             
-            float v = Fade(xf);
-            float u = Fade(yf);
+            float u = Fade(xf);
+            float v = Fade(yf);
 
             
             int vector_1, vector_2, vector_3, vector_4;
@@ -82,9 +82,9 @@ namespace NoiseGenerator.Perlin.TwoDimensional.Data
 
             float gradient_1, gradient_2, gradient_lerp;
 
-            gradient_1 = Lerp(Gradient(vector_1, xf, yf), Gradient(vector_3, (xf - 1.0f), yf), v);
-            gradient_2 = Lerp(Gradient(vector_2, xf, (yf - 1.0f)), Gradient(vector_4, (xf - 1.0f), (yf - 1.0f)), v);
-            gradient_lerp = Lerp(gradient_1, gradient_2, u);
+            gradient_1 = Lerp(Gradient(vector_1, xf, yf), Gradient(vector_3, (xf - 1.0f), yf), u);
+            gradient_2 = Lerp(Gradient(vector_2, xf, (yf - 1.0f)), Gradient(vector_4, (xf - 1.0f), (yf - 1.0f)), u);
+            gradient_lerp = Lerp(gradient_1, gradient_2, v);
                 
             return (gradient_lerp + 1) * 0.5f;
         }
