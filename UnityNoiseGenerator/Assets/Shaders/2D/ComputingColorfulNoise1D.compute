@@ -1,0 +1,52 @@
+#pragma kernel CSMain
+
+
+
+// Constants
+#define PI 3.1415926538
+
+// Custom data
+struct ColorBound
+{
+    float Center;
+    float4 Color;
+};
+struct NoiseSample
+{
+    float Value;
+};
+
+
+// Output
+RWTexture2D<float4> Result;
+
+// Buffers
+StructuredBuffer<NoiseSample> SamplesBuffer;
+
+// Data
+uint2 TextureResolution;
+float4 ForegroundColor;
+float4 BackgroundColor;
+int SamplesBufferCount;
+
+
+// Functions declarations
+float4 ColorFromPosition (float relativePosition, float sampleValue);
+
+// Kernel functions
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float2 relativeCoordinates = (float2)id.xy / TextureResolution.xy;
+    const uint currentSample = (relativeCoordinates.x * SamplesBufferCount);
+
+    Result[id.xy] = (relativeCoordinates.y < SamplesBuffer[currentSample].Value) ? ColorFromPosition(relativeCoordinates.y, SamplesBuffer[currentSample].Value) : BackgroundColor;
+}
+
+// Methods
+float4 ColorFromPosition (float relativePosition, float sampleValue)
+{
+    return lerp(ForegroundColor,BackgroundColor, sin(relativePosition / sampleValue)); // (relativePosition / sampleValue) * (PI / 2) for smooth effect
+}
+
+

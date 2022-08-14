@@ -1,20 +1,23 @@
-using NoiseGenerator.Perlin.OneDimensional.Data;
+using NoiseGenerator.Perlin.TwoDimensional.Data;
 using System.Collections.Generic;
+using NoiseGenerator.Utilities;
 using NoiseGenerator.Base;
+using UnityEngine.Events;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 
 namespace NoiseGenerator.Perlin
 {
-    public class PerlinNoise1DVisualizer : BaseTextureContainer
+    public class PerlinNoise1DTimeVisualizer : BaseTextureContainer
     {
+        [System.Serializable] public class ShaderProcessorUnityEvent : UnityEvent<ShaderProcessor> { }
         struct NoiseSample
         {
             public float Value;
         }
-        
+
+
         #region Constants
         private static readonly int SHADER_SAMPLES_BUFFER_COUNT = Shader.PropertyToID("SamplesBufferCount");
         private static readonly int SHADER_COLOR_FOREGROUND = Shader.PropertyToID("ForegroundColor");
@@ -37,13 +40,28 @@ namespace NoiseGenerator.Perlin
         [SerializeField] private float _time;
         [SerializeField] [Range(0.000f, 1.0f)] private float _timeScale = 0.1f;
         [SerializeField] [Range(1, 60)] private int _updateRate = 15;
+        [Header("Events")]
+        [SerializeField] private ShaderProcessorUnityEvent _onStart;
+        [SerializeField] private ShaderProcessorUnityEvent _onDispatch;
         
         private Queue<NoiseSample> _noiseSamples = new ();
         private ComputeBuffer _samplesBuffer;
-        private PerlinNoise1D _noise;
+
+        private float _samplesUpdateDelay;
+        private PerlinNoise2D _noise;
         private Renderer _renderer;
-        private int _sampleCounter;
         private int _samplesCount;
+        
+        public event UnityAction<ShaderProcessor> OnDispatch
+        {
+            add { _onDispatch.AddListener(value); }
+            remove { _onDispatch.RemoveListener(value); }
+        }
+        public event UnityAction<ShaderProcessor> OnStart
+        {
+            add { _onStart.AddListener(value); }
+            remove { _onStart.RemoveListener(value); }
+        }
         
         
         protected override void Awake()
@@ -51,7 +69,7 @@ namespace NoiseGenerator.Perlin
             base.Awake();
             
             _samplesCount = (int)Mathf.Clamp(_textureSize.x * _sampleZoom, 1.0f, _textureSize.x);
-            _noise = new PerlinNoise1D();
+            _noise = new PerlinNoise2D();
             
             _renderer = GetComponent<Renderer>();
             _renderer.enabled = true;
@@ -61,6 +79,7 @@ namespace NoiseGenerator.Perlin
 
         private void Start()
         {
+            _onStart?.Invoke(this);
             Visualize();
 
             StartCoroutine(nameof(VisualizeRoutine));
@@ -91,18 +110,15 @@ namespace NoiseGenerator.Perlin
                     continue;
                 
                 _time += (waitTime * _timeScale);
+                
+                _onDispatch?.Invoke(this);
                 VisualizeSingle();
             }
         }
 
         private void UpdateNoiseParameters()
         {
-            if (_samplesBuffer != null)
-                _samplesBuffer.Release();
-            _samplesBuffer = new ComputeBuffer(_noiseSamples.Count, sizeof(float));
-            _samplesBuffer.SetData(_noiseSamples.ToArray());
-        
-            _shader.SetBuffer(_kernelHandle, SHADER_SAMPLES_BUFFER, _samplesBuffer);
+            _shader.UpdateBuffer(_kernelHandle, SHADER_SAMPLES_BUFFER, ref _samplesBuffer, _noiseSamples, sizeof(float));
             _shader.SetInt(SHADER_SAMPLES_BUFFER_COUNT, _noiseSamples.Count);
         }
 
@@ -123,7 +139,7 @@ namespace NoiseGenerator.Perlin
             {
                 _noiseSamples.Enqueue(new NoiseSample()
                 {
-                    Value = _noise.Evaluate(_seed + _time + (i * _sampleFrequency), _octaves, _persistence)
+                    Value = _noise.Evaluate(_seed + (i * _sampleFrequency), _time, _octaves, _persistence)
                 });
             }
 
@@ -134,42 +150,7 @@ namespace NoiseGenerator.Perlin
         [ContextMenu("Visualize single")]
         public void VisualizeSingle()
         {
-            // --- Manage [_samplesCount] change
-            if (_samplesCount != _noiseSamples.Count)
-            {
-                var temporarySamples = _noiseSamples.ToList();
-                // Handle decrease of [_samplesCount]
-                var samplesToDelete = (temporarySamples.Count - _samplesCount);
-                for (int i = 0; i < samplesToDelete; i++)
-                {
-                    _sampleCounter--;
-                    temporarySamples.RemoveAt(temporarySamples.Count - 1);
-                }
-            
-                // Handle increase of [_samplesCount]
-                while (temporarySamples.Count != _samplesCount)
-                {
-                    _sampleCounter++;
-                    temporarySamples.Add(new NoiseSample() {
-                        Value = _noise.Evaluate(_seed + ((_samplesCount + _sampleCounter) * _sampleFrequency) + _time, _octaves, _persistence)
-                    });    
-                }
-                
-                _noiseSamples.Clear();
-                foreach (var noiseSample in temporarySamples)
-                    _noiseSamples.Enqueue(noiseSample);
-            }
-            
-            // Generate next noise sample
-            _sampleCounter++;
-            _noiseSamples.Enqueue(new NoiseSample() {
-                Value = _noise.Evaluate(_seed + ((_samplesCount + _sampleCounter) * _sampleFrequency) + _time, _octaves, _persistence)
-            });
-            _noiseSamples.Dequeue();
-            
-            // Update shader parameters & Call for material update
-            UpdateNoiseParameters();
-            DispatchShader();
+            Visualize();
         }
     }
 }

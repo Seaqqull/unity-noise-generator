@@ -1,0 +1,78 @@
+#pragma kernel CSMain
+
+
+
+// Custom data
+struct ColorBound
+{
+    float Center;
+    float4 Color;
+};
+struct NoiseSample
+{
+    float Value;
+};
+
+
+// Output
+RWTexture2D<float4> Result;
+
+// Buffers
+StructuredBuffer<NoiseSample> SamplesBuffer;
+StructuredBuffer<ColorBound> ColorsBuffer;
+
+// Data
+uint2 TextureResolution;
+float4 ForegroundColor;
+float4 BackgroundColor;
+int SamplesBufferCount;
+int ColorsBufferCount;
+
+
+// Functions declarations
+float4 ColorFromPosition (float relativePosition, float sampleValue);
+float4 GetRangeColors (float value);
+float Fade(float t);
+
+// Kernel functions
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float2 relativeCoordinates = (float2)id.xy / TextureResolution.xy;
+    const uint currentSample = (relativeCoordinates.x * SamplesBufferCount);
+
+    Result[id.xy] = (relativeCoordinates.y < SamplesBuffer[currentSample].Value) ? ColorFromPosition(relativeCoordinates.y, SamplesBuffer[currentSample].Value) : BackgroundColor;
+}
+
+// Methods
+float Fade(float t)
+{
+    return t * t * t * ( t * (t * 6 - 15) + 10);
+}
+
+float4 GetRangeColors (float value)
+{
+    // <= Bottom
+    if (value <= ColorsBuffer[0].Center)
+        return ColorsBuffer[0].Color;
+
+    // >= Top
+    if (value >= ColorsBuffer[ColorsBufferCount - 1].Center)
+        return lerp(ColorsBuffer[ColorsBufferCount - 1].Color, BackgroundColor, Fade((value - ColorsBuffer[ColorsBufferCount - 1].Center) / (1.0f - ColorsBuffer[ColorsBufferCount - 1].Center)));
+
+    // Mid
+    for (int i = 0; i < (ColorsBufferCount - 1); i++)
+    {
+        if ((value >= ColorsBuffer[i].Center) && (value <= ColorsBuffer[i + 1].Center))
+            return lerp(ColorsBuffer[i].Color, ColorsBuffer[i + 1].Color, Fade((value - ColorsBuffer[i].Center) / (ColorsBuffer[i + 1].Center - ColorsBuffer[i].Center)));
+    }
+
+    // Not in range
+    return BackgroundColor;
+}
+
+float4 ColorFromPosition (float relativePosition, float sampleValue)
+{
+    float relativeValue = relativePosition / sampleValue;
+    return GetRangeColors(relativeValue); 
+}

@@ -30,6 +30,12 @@ namespace NoiseGenerator.Helpers
         private ComputeBuffer _colorsBuffer;
 
 
+        private void OnDestroy()
+        {
+            _colorsBuffer.Dispose();
+        }
+
+
         public override void Process(ShaderProcessor shader)
         {
             if (!_enabled) return;

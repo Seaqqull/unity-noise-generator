@@ -19,7 +19,6 @@ uint2 TextureResolution;
 float4 ForegroundColor;
 float4 BackgroundColor;
 int SamplesBufferCount;
-int SampleWidth;
 
 
 // Kernel functions
