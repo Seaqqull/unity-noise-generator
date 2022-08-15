@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace NoiseGenerator.Perlin
 {
-    public class PerlinNoise1DVisualizer : BaseTextureContainer
+    public class PerlinNoise1DVisualizer : TextureDrawer
     {
         struct NoiseSample
         {
@@ -20,7 +20,6 @@ namespace NoiseGenerator.Perlin
         private static readonly int SHADER_COLOR_FOREGROUND = Shader.PropertyToID("ForegroundColor");
         private static readonly int SHADER_COLOR_BACKGROUND = Shader.PropertyToID("BackgroundColor");
         private static readonly int SHADER_SAMPLES_BUFFER = Shader.PropertyToID("SamplesBuffer");
-        private static readonly int SHADER_MAIN_TEXTURE = Shader.PropertyToID("_MainTex");
         #endregion
 
         [SerializeField] private Color _backgroungColor = Color.black;
@@ -41,7 +40,6 @@ namespace NoiseGenerator.Perlin
         private Queue<NoiseSample> _noiseSamples = new ();
         private ComputeBuffer _samplesBuffer;
         private PerlinNoise1D _noise;
-        private Renderer _renderer;
         private int _sampleCounter;
         private int _samplesCount;
         
@@ -52,11 +50,6 @@ namespace NoiseGenerator.Perlin
             
             _samplesCount = (int)Mathf.Clamp(_textureSize.x * _sampleZoom, 1.0f, _textureSize.x);
             _noise = new PerlinNoise1D();
-            
-            _renderer = GetComponent<Renderer>();
-            _renderer.enabled = true;
-            
-            _renderer.material.SetTexture(SHADER_MAIN_TEXTURE, _renderedSource);
         }
 
         private void Start()

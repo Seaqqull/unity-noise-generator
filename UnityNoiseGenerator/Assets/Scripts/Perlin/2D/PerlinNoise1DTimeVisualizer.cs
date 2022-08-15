@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace NoiseGenerator.Perlin
 {
-    public class PerlinNoise1DTimeVisualizer : BaseTextureContainer
+    public class PerlinNoise1DTimeVisualizer : TextureDrawer
     {
         [System.Serializable] public class ShaderProcessorUnityEvent : UnityEvent<ShaderProcessor> { }
         struct NoiseSample
@@ -23,7 +23,6 @@ namespace NoiseGenerator.Perlin
         private static readonly int SHADER_COLOR_FOREGROUND = Shader.PropertyToID("ForegroundColor");
         private static readonly int SHADER_COLOR_BACKGROUND = Shader.PropertyToID("BackgroundColor");
         private static readonly int SHADER_SAMPLES_BUFFER = Shader.PropertyToID("SamplesBuffer");
-        private static readonly int SHADER_MAIN_TEXTURE = Shader.PropertyToID("_MainTex");
         #endregion
 
         [SerializeField] private Color _backgroungColor = Color.black;
@@ -49,7 +48,6 @@ namespace NoiseGenerator.Perlin
 
         private float _samplesUpdateDelay;
         private PerlinNoise2D _noise;
-        private Renderer _renderer;
         private int _samplesCount;
         
         public event UnityAction<ShaderProcessor> OnDispatch
@@ -70,11 +68,6 @@ namespace NoiseGenerator.Perlin
             
             _samplesCount = (int)Mathf.Clamp(_textureSize.x * _sampleZoom, 1.0f, _textureSize.x);
             _noise = new PerlinNoise2D();
-            
-            _renderer = GetComponent<Renderer>();
-            _renderer.enabled = true;
-            
-            _renderer.material.SetTexture(SHADER_MAIN_TEXTURE, _renderedSource);
         }
 
         private void Start()
