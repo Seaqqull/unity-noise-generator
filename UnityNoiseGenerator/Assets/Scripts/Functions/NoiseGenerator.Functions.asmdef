@@ -1,0 +1,17 @@
+{
+    "name": "NoiseGenerator.Functions",
+    "rootNamespace": "NoiseGenerator.Functions",
+    "references": [
+        "GUID:34aac2a60b3364d83aa2bfee3e20857d",
+        "GUID:24c7c2286d42249d9979a5391863a12e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
