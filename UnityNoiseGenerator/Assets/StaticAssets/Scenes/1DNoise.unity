@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 534353843}
   - component: {fileID: 534353841}
   m_Layer: 0
-  m_Name: Quad
+  m_Name: NoiseView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,9 +161,9 @@ MonoBehaviour:
   _foregroundColor: {r: 0.7058824, g: 0.9019608, b: 0.8627451, a: 1}
   _sampleZoom: 1
   _sampleFrequency: 0.01
-  _realtimeUpdate: 1
   _octaves: 1
   _persistence: 0.5
+  _realtimeUpdate: 1
   _seed: 0
   _time: 0
   _timeScale: 0

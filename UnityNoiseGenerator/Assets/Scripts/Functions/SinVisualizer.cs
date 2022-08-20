@@ -65,7 +65,6 @@ namespace NoiseGenerator.Functions
 
         private void Start()
         {
-            // _onStart?.Invoke(this);
             Visualize();
 
             StartCoroutine(nameof(VisualizeRoutine));
@@ -97,7 +96,6 @@ namespace NoiseGenerator.Functions
                 
                 _time += (waitTime * _timeScale);
                 
-                // _onDispatch?.Invoke(this);
                 VisualizeSingle();
             }
         }
