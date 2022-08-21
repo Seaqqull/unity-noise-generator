@@ -142,10 +142,10 @@ namespace NoiseGenerator.Perlin
                 // Handle increase of [_samplesCount]
                 while (temporarySamples.Count != _samplesCount)
                 {
-                    _sampleCounter++;
                     temporarySamples.Add(new NoiseSample() {
                         Value = _noise.Evaluate(_seed + ((_samplesCount + _sampleCounter) * _sampleFrequency) + _time, _octaves, _persistence)
-                    });    
+                    });
+                    _sampleCounter++;
                 }
                 
                 _noiseSamples.Clear();
@@ -154,11 +154,11 @@ namespace NoiseGenerator.Perlin
             }
             
             // Generate next noise sample
-            _sampleCounter++;
             _noiseSamples.Enqueue(new NoiseSample() {
                 Value = _noise.Evaluate(_seed + ((_samplesCount + _sampleCounter) * _sampleFrequency) + _time, _octaves, _persistence)
             });
             _noiseSamples.Dequeue();
+            _sampleCounter++;
             
             // Update shader parameters & Call for material update
             UpdateNoiseParameters();
