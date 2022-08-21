@@ -31,6 +31,7 @@ namespace NoiseGenerator.Base
                 return;
             }
 
+            _shader = Instantiate(_shader);
             _kernelHandle = _shader.FindKernel(_kernelName);
         }
     }
