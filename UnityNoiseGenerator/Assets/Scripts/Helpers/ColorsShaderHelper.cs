@@ -7,10 +7,10 @@ using System;
 
 namespace NoiseGenerator.Helpers
 {
-    public class ColorsHelper : Helper
+    public class ColorsShaderHelper : ShaderHelper
     {
         [Serializable]
-        struct ColorBound
+        public struct ColorBound
         {
             [Range(0.0f, 1.0f)] public float Center;
             public Color Color;
@@ -23,16 +23,16 @@ namespace NoiseGenerator.Helpers
         private static readonly int BUFFER_STRIDE = sizeof(float) * 5;
         #endregion
 
-        [SerializeField] private bool _enabled = true;
+        [SerializeField] protected bool _enabled = true;
         [Space]
-        [SerializeField] private ColorBound[] _noiseColorBounds;
+        [SerializeField] protected ColorBound[] _noiseColorBounds;
 
         private ComputeBuffer _colorsBuffer;
 
 
         private void OnDestroy()
         {
-            _colorsBuffer.Dispose();
+            _colorsBuffer?.Dispose();
         }
 
 

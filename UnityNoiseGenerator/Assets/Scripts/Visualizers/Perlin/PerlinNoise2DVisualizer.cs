@@ -97,7 +97,7 @@ namespace NoiseGenerator.Perlin
         {
             base.OnDestroy();
             
-            _samplesBuffer.Dispose();
+            _samplesBuffer?.Dispose();
             StopCoroutine(nameof(VisualizeRoutine));
         }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NoiseGenerator.Helpers
 {
-    public abstract class Helper : MonoBehaviour
+    public abstract class ShaderHelper : MonoBehaviour
     {
         public abstract void Process(ShaderProcessor shader);
     }
